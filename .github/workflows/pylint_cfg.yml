@@ -21,16 +21,14 @@ jobs:
     - name: Analysing the code with pylint
       # See https://stackoverflow.com/q/71086285
       run: |
-        PYLINT_OUTPUT=$(pylint $(git ls-files '*.py')  --exit-zero)
-    - name: Post result to PR
-      uses: mshick/add-pr-comment@v1
+        pylint $(git ls-files '*.py')
+    - name: Post result
+      uses: TheFoundryVisionmongers/fn-pylint-action@v1
       with:
-        message: ${{ env.PYLINT_OUTPUT }}
-        repo-token: ${{ secrets.GITHUB_TOKEN }}
-        repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
-        allow-repeats: false # This is the default
-
-
+        pylint-disable: "C,I,R"  # Only errors and warnings.
+        pylint-rcfile: "./pyproject.toml"
+        pylint-paths: "python tests"
+    
 
 
 
