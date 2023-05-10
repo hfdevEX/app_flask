@@ -3,7 +3,7 @@ on:
   pull_request:
     branches: [main, master]
 env:
-  REGISTRY: ghcr.io
+  REGISTRY: ghcr.io/hfdevEX
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
@@ -16,7 +16,7 @@ jobs:
     
     - name: Docker meta
       id: docker_meta
-      uses: ./
+      uses: docker/metadata-action@v4
       with:
         images: |
           ${{ env.IMAGE_NAME }}
