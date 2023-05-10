@@ -27,7 +27,7 @@ jobs:
       id: docker_meta
       uses: docker/metadata-action@v4
       with:
-        images: ${{ env.REGISTRY }}
+        images: ${{ env.REGISTRY }}/flask_app
 
     - name: Build and push Docker image
       uses: docker/build-push-action@v4
