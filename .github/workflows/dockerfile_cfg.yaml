@@ -3,7 +3,7 @@ on:
   pull_request:
     branches: [main, master]
 env:
-  REGISTRY: ghcr.io/hfdevEX
+  REGISTRY: ghcr.io/hayetyefsah
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
