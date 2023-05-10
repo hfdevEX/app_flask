@@ -16,7 +16,7 @@ jobs:
     
     - name: Docker meta
       id: docker_meta
-      uses: .
+      uses: ./
       with:
         images: |
           ${{ env.IMAGE_NAME }}
