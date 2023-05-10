@@ -19,6 +19,17 @@ jobs:
           python -m pip install --upgrade pip
           pip install flake8 pytest pytest-cov
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Get pip cache dir
+      id: pip-cache
+      run: |
+        echo "::set-output name=dir::$(pip cache dir)"
+    - name: pip cache
+      uses: actions/cache@v2
+      with:
+        path: ${{ steps.pip-cache.outputs.dir }}
+        key: pip-${{ matrix.python-version }}
+        restore-keys: |
+              pip-${{ matrix.python-version }}
     - name: Build coverage file
       run: |
           pytest --cache-clear --cov=tests --cov-report xml tests/
