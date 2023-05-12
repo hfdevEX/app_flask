@@ -5,6 +5,7 @@ from datetime import datetime
 from flask import Flask, render_template, request, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_swagger_ui import get_swaggerui_blueprint
+import http.client
 
 
 app = Flask(__name__)
@@ -63,6 +64,8 @@ Méthodes:
 
     def __repr__(self):
         return f'<RssFeed {self.id}: {self.name}>'
+    
+    
 
 @app.route('/')
 def home():

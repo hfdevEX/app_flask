@@ -12,14 +12,6 @@ WORKDIR /usr/app
 
 COPY static static
 COPY templates templates
-COPY client.py .
+COPY server.py .
 COPY instance instance
 COPY uploads uploads
-
-
-EXPOSE 5000
-
-ENV FLASK_APP=main.py
-
-
-CMD [ "python3", "-m" , "flask", "run"]
