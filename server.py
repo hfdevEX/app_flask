@@ -2,7 +2,7 @@ import os
 import json
 import feedparser
 from datetime import datetime
-from flask import Flask, render_template, request, flash, redirect, url_for
+from flask import Flask, render_template, request, flash, redirect, url_for, jsonify, make_response,Response
 from flask_sqlalchemy import SQLAlchemy
 from flask_swagger_ui import get_swaggerui_blueprint
 
@@ -60,38 +60,38 @@ Méthodes:
     name = db.Column(db.String(80), nullable=False)
     url = db.Column(db.String(255), nullable=False)
     image = db.Column(db.String(255))
-
+    
+    def __init__(self, id, name, url, image):
+        self.id = id
+        self.name = name
+        self.url = url
+        self.image = image
+        
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}    
+        
     def __repr__(self):
         return f'<RssFeed {self.id}: {self.name}>'
-    
+
 @app.route('/feeds')
-def feeds():
+def get_all_feeds():
     feeds = RssFeed.query.all()
-    return feeds.json
+    response = [f.as_dict() for f in feeds]
+    return response
 
-@app.route('/')
-def home():
-    """
-    Fonction home() qui récupère tous les flux RSS de la base de données et les affiche sur la page d'accueil.
+@app.route('/feeds/<int:id>', methods=['GET'])
+def get_one_feed(id):
+    feed = RssFeed.query.get(id)
+    articles = fetch_feed(feed.url)
+    return jsonify(articles)
 
-    Returns:
-        str: Rendu du template 'home.html' avec la liste de tous les flux RSS.
-    """
-    
-    feeds = RssFeed.query.all()
-    return render_template('home.html', feeds=feeds)
+@app.route('/feeds/<int:id>/metadata', methods=['GET'])
+def get_feed_metadata(id):
+    feed = RssFeed.query.get(id)
+    return feed.as_dict()
 
 @app.route('/show/<int:id>', methods=['GET'])
 def show(id):
-    """
-    Fonction show() pour afficher un flux RSS spécifique et ses articles.
-
-    Args:
-        id (int): Identifiant du flux RSS.
-
-    Returns:
-        str: Rendu du template 'show.html' avec les détails du flux RSS et la liste des articles.
-    """
     
     feed = RssFeed.query.get(id)
     
@@ -103,36 +103,20 @@ def show(id):
         flash('Unknown feed or articles', 'error')
         return redirect(url_for('home')) 
 
-@app.route('/new', methods=['POST', 'GET'])
+@app.route('/new_feed', methods=['POST'])
 def add_feed():
-    """
-    Fonction add_feed() pour ajouter un nouveau flux RSS. Gère les requêtes GET et POST.
-
-    Returns:
-        str: Rendu du template 'new.html' en cas de requête GET, ou redirection vers la page d'accueil après l'ajout en cas de requête POST.
-    """
-    if request.method == 'GET':
-        return render_template('new.html')
-    name = request.form['name']
-    url = request.form['url']
-    image = request.form['image']
-    feed = RssFeed(name=name, url=url, image=image)
+    content=request.json
+    feed = RssFeed(id=1234567, name=content['name'], url=content['url'], image=content['image'])
+    print(feed)
     db.session.add(feed)
     db.session.commit()
-    flash('Feed added successfully!', 'success')
-    return redirect(url_for('home'))
+    return Response(status=201)
+
+
 
 @app.route('/edit/<int:id>', methods=['POST', 'GET'])
 def edit(id):
-    """
-    Fonction edit() pour modifier un flux RSS existant. Gère les requêtes GET et POST.
 
-    Args:
-        id (int): Identifiant du flux RSS à modifier.
-
-    Returns:
-        str: Rendu du template 'new.html' en cas de requête GET, ou redirection vers la page d'accueil après la mise à jour en cas de requête POST.
-    """
     
     feed = RssFeed.query.get(id)
     if request.method == 'POST':
@@ -151,16 +135,6 @@ def edit(id):
 
 @app.route('/delete/<int:id>')
 def delete(id):
-
-    """
-        Fonction delete() pour supprimer un flux RSS.
-
-        Args:
-            id (int): Identifiant du flux RSS à supprimer.
-
-        Returns:
-            str: Redirection vers la page d'accueil après la suppression.
-    """
     
     feed = RssFeed.query.get(id)
     db.session.delete(feed)
@@ -224,4 +198,3 @@ if __name__ == '__main__':
         db.create_all()
     port = int(os.environ.get('PORT', 5000))
     app.run(debug=True, host='0.0.0.0', port=port)
-
