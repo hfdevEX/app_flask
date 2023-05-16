@@ -22,11 +22,12 @@ def show(id):
     return render_template('show.html', feed=feed,  articles=articles)
         
 def get_data(path):
-    url = f"http://localhost:5001/{path}"
+    #url = f"http://localhost:5001/{path}"
+    url = f"http://load_balancer:80/{path}"
     r = requests.get(url)
   
     if r.status_code == 200:
         content = json.loads(r.text)
         return content
     else:
-        flash(f"Error retrieving data, status code: {r.status_code, }")
+        flash(f"Error retrieving data, status code: {r.status_code}")

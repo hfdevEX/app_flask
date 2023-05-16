@@ -1,0 +1,22 @@
+version: "3.8"
+services:
+  server:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5000"
+
+  load_balancer:
+    build:
+      context: ./Loadbalancer
+      dockerfile: Dockerfile
+    ports:
+      - "8090:80"
+    
+  client:
+    build:
+      context: ./app
+      dockerfile: Dockerfile.client
+    ports:
+      - "5000:5000"
