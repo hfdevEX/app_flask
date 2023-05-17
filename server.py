@@ -111,71 +111,142 @@ def show(id):
     else:
         flash('Unknown feed or articles', 'error')
         return redirect(url_for('home')) 
-
-@app.route('/new', methods=['POST', 'GET'])
+    
+    
+@app.route('/feeds/new', methods=['POST'])
 def add_feed():
     """
-    Fonction add_feed() pour ajouter un nouveau flux RSS. Gère les requêtes GET et POST.
+    Fonction add_feed() pour ajouter un nouveau flux RSS. Gère la requête POST.
 
     Returns:
-        str: Rendu du template 'new.html' en cas de requête GET, ou redirection vers la page d'accueil après l'ajout en cas de requête POST.
+        str: Redirection vers la page d'accueil après l'ajout.
     """
-    if request.method == 'GET':
-        return render_template('new.html')
-    name = request.form['name']
-    url = request.form['url']
-    image = request.form['image']
-    feed = RssFeed(name=name, url=url, image=image)
-    db.session.add(feed)
-    db.session.commit()
-    flash('Feed added successfully!', 'success')
-    return redirect(url_for('home'))
+    name = request.json.get('name')
+    url = request.json.get('url')
+    image = request.json.get('image')
+        
+    return jsonify(name, url, image), 201
 
-@app.route('/edit/<int:id>', methods=['POST', 'GET'])
+
+@app.route('/edit/<int:id>', methods=['PUT'])
 def edit(id):
     """
-    Fonction edit() pour modifier un flux RSS existant. Gère les requêtes GET et POST.
+    Fonction edit() pour modifier un flux RSS existant. Gère la requête PUT.
 
     Args:
         id (int): Identifiant du flux RSS à modifier.
 
     Returns:
-        str: Rendu du template 'new.html' en cas de requête GET, ou redirection vers la page d'accueil après la mise à jour en cas de requête POST.
+        str: Redirection vers la page d'accueil après la mise à jour.
     """
-    
-    feed = RssFeed.query.get(id)
-    if request.method == 'POST':
-        name = request.form['name']
-        url = request.form['url']
-        image = request.form['image']
-        feed.name = name 
-        feed.url = url 
-        feed.image = image
-        db.session.commit()
-        flash('Feed updated successfully!', 'success')    
-        return redirect(url_for('home'))
-    
-    if request.method == 'GET':
-        return render_template('new.html', feed=feed)
 
-@app.route('/delete/<int:id>')
+    feed = RssFeed.query.get(id)
+    if not feed:
+        return jsonify({'error': 'Feed not found'}), 404
+
+    name = request.json.get('name')
+    url = request.json.get('url')
+    image = request.json.get('image')
+
+    if not name or not url:
+        jsonify({'error': 'Missing required fields'}), 400
+        return message
+
+    feed.name = name
+    feed.url = url
+    feed.image = image
+    db.session.commit()
+
+    message = jsonify({'message': 'Feed updated successfully!'}), 200
+    return message
+
+
+@app.route('/delete/<int:id>', methods=['DELETE'])
 def delete(id):
-
     """
-        Fonction delete() pour supprimer un flux RSS.
+    Fonction delete() pour supprimer un flux RSS.
 
-        Args:
-            id (int): Identifiant du flux RSS à supprimer.
+    Args:
+        id (int): Identifiant du flux RSS à supprimer.
 
-        Returns:
-            str: Redirection vers la page d'accueil après la suppression.
+    Returns:
+        str: Redirection vers la page d'accueil après la suppression.
     """
-    
+
     feed = RssFeed.query.get(id)
+    if not feed:
+        return jsonify({'error': 'Feed not found'}), 404
+
     db.session.delete(feed)
     db.session.commit()
-    flash('Feed deleted successfully!', 'success')
-    return redirect(url_for('home'))
+
+    return jsonify({'message': 'Feed deleted successfully!'}), 200
+
+
+# @app.route('/new', methods=['POST', 'GET'])
+# def add_feed():
+#     """
+#     Fonction add_feed() pour ajouter un nouveau flux RSS. Gère les requêtes GET et POST.
+
+#     Returns:
+#         str: Rendu du template 'new.html' en cas de requête GET, ou redirection vers la page d'accueil après l'ajout en cas de requête POST.
+#     """
+#     if request.method == 'GET':
+#         return render_template('new.html')
+#     name = request.form['name']
+#     url = request.form['url']
+#     image = request.form['image']
+#     feed = RssFeed(name=name, url=url, image=image)
+#     db.session.add(feed)
+#     db.session.commit()
+#     flash('Feed added successfully!', 'success')
+#     return redirect(url_for('home'))
+
+# @app.route('/edit/<int:id>', methods=['POST', 'GET'])
+# def edit(id):
+#     """
+#     Fonction edit() pour modifier un flux RSS existant. Gère les requêtes GET et POST.
+
+#     Args:
+#         id (int): Identifiant du flux RSS à modifier.
+
+#     Returns:
+#         str: Rendu du template 'new.html' en cas de requête GET, ou redirection vers la page d'accueil après la mise à jour en cas de requête POST.
+#     """
+    
+#     feed = RssFeed.query.get(id)
+#     if request.method == 'POST':
+#         name = request.form['name']
+#         url = request.form['url']
+#         image = request.form['image']
+#         feed.name = name 
+#         feed.url = url 
+#         feed.image = image
+#         db.session.commit()
+#         flash('Feed updated successfully!', 'success')    
+#         return redirect(url_for('home'))
+    
+#     if request.method == 'GET':
+#         return render_template('new.html', feed=feed)
+
+# @app.route('/delete/<int:id>')
+# def delete(id):
+
+#     """
+#         Fonction delete() pour supprimer un flux RSS.
+
+#         Args:
+#             id (int): Identifiant du flux RSS à supprimer.
+
+#         Returns:
+#             str: Redirection vers la page d'accueil après la suppression.
+#     """
+    
+#     feed = RssFeed.query.get(id)
+#     db.session.delete(feed)
+#     db.session.commit()
+#     flash('Feed deleted successfully!', 'success')
+#     return redirect(url_for('home'))
 
 @app.route('/upload', methods=['POST', 'GET'])
 def upload():

@@ -30,3 +30,11 @@ def get_data(path):
         return content
     else:
         flash(f"Error retrieving data, status code: {r.status_code, }")
+        
+
+@app.route('/new')
+def add_client_feed():
+    url = f"http://load_balancer/feeds/new"
+    r = requests.get(url)
+    post_data = json.loads(r.text)
+    return print(post_data)
