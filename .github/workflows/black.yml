@@ -1,17 +1,12 @@
-name: Blacktool
+name: Lint
 
-on: 
-  pull_request:
-    branches: [main,master]
+on: [push, pull_request]
 
 jobs:
-  blacktool:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: psf/black@stable
         with:
           options: "--check --verbose"
-          src: "./src"
-          jupyter: true
-          version: "21.5b1"
