@@ -29,10 +29,12 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ steps.pip-cache.outputs.dir }}
+
           key: pip-${{ github.sha }}
           restore-keys: |
             pip-${{ github.sha }}
     
+
       - name: Build coverage file
         run: |
           pytest --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov=app tests/ | tee pytest-coverage.txt
