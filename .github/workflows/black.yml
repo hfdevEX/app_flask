@@ -38,4 +38,7 @@ jobs:
           git config --global user.email "charles.bailleul01@gmail.com"
           git commit -am "Apply Black formatting" --author "Charles<charles.bailleul01@gmail.com>"
 
-
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
