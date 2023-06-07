@@ -21,10 +21,10 @@
 # # @app.before_request
 # # def create_table():
 # #     db.create_all()
-    
 
-# SWAGGER_URL = '/docs' 
-# API_URL = '/static/swagger.json' 
+
+# SWAGGER_URL = '/docs'
+# API_URL = '/static/swagger.json'
 
 # swaggerui_blueprint = get_swaggerui_blueprint(
 #     SWAGGER_URL,
@@ -35,7 +35,7 @@
 # )
 
 # app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
-    
+
 
 # db = SQLAlchemy(app)
 
@@ -55,7 +55,7 @@
 # Méthodes:
 #     __repr__(self): Retourne une représentation sous forme de chaîne de caractères de l'objet RssFeed.
 # """
-    
+
 #     __tablename__= "rssFeed"
 #     id = db.Column(db.Integer, primary_key=True)
 #     name = db.Column(db.String(80), nullable=False)
@@ -73,7 +73,7 @@
 #     Returns:
 #         str: Rendu du template 'home.html' avec la liste de tous les flux RSS.
 #     """
-    
+
 #     feeds = RssFeed.query.all()
 #     return render_template('home.html', feeds=feeds)
 
@@ -88,16 +88,16 @@
 #     Returns:
 #         str: Rendu du template 'show.html' avec les détails du flux RSS et la liste des articles.
 #     """
-    
+
 #     feed = RssFeed.query.get(id)
-    
+
 #     articles = fetch_feed(feed.url)
-    
+
 #     if int(id):
 #         return render_template('show.html', feed=feed, articles=articles)
 #     else:
 #         flash('Unknown feed or articles', 'error')
-#         return redirect(url_for('home')) 
+#         return redirect(url_for('home'))
 
 # @app.route('/new', methods=['POST', 'GET'])
 # def add_feed():
@@ -129,19 +129,19 @@
 #     Returns:
 #         str: Rendu du template 'new.html' en cas de requête GET, ou redirection vers la page d'accueil après la mise à jour en cas de requête POST.
 #     """
-    
+
 #     feed = RssFeed.query.get(id)
 #     if request.method == 'POST':
 #         name = request.form['name']
 #         url = request.form['url']
 #         image = request.form['image']
-#         feed.name = name 
-#         feed.url = url 
+#         feed.name = name
+#         feed.url = url
 #         feed.image = image
 #         db.session.commit()
-#         flash('Feed updated successfully!', 'success')    
+#         flash('Feed updated successfully!', 'success')
 #         return redirect(url_for('home'))
-    
+
 #     if request.method == 'GET':
 #         return render_template('new.html', feed=feed)
 
@@ -157,7 +157,7 @@
 #         Returns:
 #             str: Redirection vers la page d'accueil après la suppression.
 #     """
-    
+
 #     feed = RssFeed.query.get(id)
 #     db.session.delete(feed)
 #     db.session.commit()
@@ -166,15 +166,15 @@
 
 # @app.route('/upload', methods=['POST', 'GET'])
 # def upload():
-    
+
 #     """Fonction upload() pour importer des flux RSS à partir d'un fichier JSON. Gère les requêtes GET et POST
 
 #     str: Rendu du template 'upload.html' en cas de requête GET, ou redirection vers la page d'accueil après la mise à jour en cas de requête POST.
 #     """
-    
+
 #     if request.method == 'GET':
 #         return render_template('upload.html')
-    
+
 #     file = request.files['file']
 #     if not file or file.filename == '':
 #         flash('No file selected for uploading', 'error')
@@ -183,7 +183,7 @@
 #     if not file.filename.endswith('.json'):
 #         flash('Invalid file format. Please upload a JSON file', 'error')
 #         return redirect(url_for('upload'))
-    
+
 #     try:
 #         data = json.load(file)
 #         print(type(data))
@@ -199,7 +199,7 @@
 #         flash('File uploaded successfully!', 'success')
 #     except Exception as e:
 #         flash('Error uploading file: {}'.format(str(e)), 'error')
-    
+
 #     return redirect(url_for('home'))
 
 # def fetch_feed(url):
@@ -211,7 +211,7 @@
 #             'link': f.link,
 #         }
 #         articles.append(article)
-        
+
 #     return articles
 
 
@@ -220,4 +220,3 @@
 #         db.create_all()
 #     port = int(os.environ.get('PORT', 5000))
 #     app.run(debug=True, host='0.0.0.0', port=port)
-
