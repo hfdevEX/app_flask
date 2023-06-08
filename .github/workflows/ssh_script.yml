@@ -23,7 +23,7 @@ env:
 
 jobs:
   ssh:
-    runs-on: 'debian-11-latest'
+    runs-on: 'ubuntu-latest'
     permissions:
       contents: 'read'
       id-token: 'write'
