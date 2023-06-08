@@ -46,7 +46,7 @@ jobs:
       id: 'ssh'
       uses: 'google-github-actions/ssh-compute@v0'
       with:
-        instance_name: 'vm-test'
+        instance_name: 'instance-poei'
         zone: '${{ env.ZONE }}'
         ssh_private_key: '${{ secrets.VM_PRIVATE_KEY }}'
         script: '${{ github.workspace }}/deploy_detail/deploy.sh'
