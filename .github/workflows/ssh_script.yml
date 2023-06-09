@@ -57,15 +57,14 @@ jobs:
 #         echo '${{ steps.ssh.outputs.stdout }}'
 #         echo '${{ steps.ssh.outputs.stderr }}'
         
-        
-    - uses: RafikFarhad/push-to-gcr-github-action@v5-beta
+    - name: push to gcr   
+      uses: RafikFarhad/push-to-gcr-github-action@v5-beta
       with:
-         
-         registry: gcr.io
-         project_id: my-awesome-project
-         image_name: backend
-         image_tag: latest,v1
-         dockerfile: ./docker/Dockerfile.prod
-         context: ./docker
+        registry: europe-west1-docker.pkg.dev
+        project_id: bailleul-charles
+        image_name: app-flask
+        image_tag: $GITHUB_SHA
+        dockerfile: ./Dockerfile.main
+        context: .
 
 
