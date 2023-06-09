@@ -4,6 +4,7 @@ sudo apt  -y update && apt -y upgrade
 ​
 sudo apt -y install git
 sudo apt -y install pip
+sudo apt install python3.11
 sudo apt install python3.11-venv
 pip install flask
 sudo apt install net-tools
