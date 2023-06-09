@@ -43,18 +43,29 @@ jobs:
         workload_identity_provider: '${{ secrets.WIF_PROVIDER }}'
         service_account: '${{ secrets.WIF_SERVICE_ACCOUNT }}'
 
-    - name: 'SSH to GCP instance'
-      id: 'ssh'
-      uses: 'google-github-actions/ssh-compute@v0'
+#     - name: 'SSH to GCP instance'
+#       id: 'ssh'
+#       uses: 'google-github-actions/ssh-compute@v0'
+#       with:
+#         instance_name: 'instance-poei'
+#         zone: '${{ env.ZONE }}'
+#         ssh_private_key: '${{ secrets.VM_PRIVATE_KEY }}'
+#         script: '${{ github.workspace }}/deploy_detail/deploy.sh'
+   
+#     - name: 'Show Output'
+#       run: |-
+#         echo '${{ steps.ssh.outputs.stdout }}'
+#         echo '${{ steps.ssh.outputs.stderr }}'
+        
+        
+    - uses: RafikFarhad/push-to-gcr-github-action@v5-beta
       with:
-        instance_name: 'instance-poei'
-        zone: '${{ env.ZONE }}'
-        ssh_private_key: '${{ secrets.VM_PRIVATE_KEY }}'
-        script: '${{ github.workspace }}/deploy_detail/deploy.sh'
-
-    - name: 'Show Output'
-      run: |-
-        echo '${{ steps.ssh.outputs.stdout }}'
-        echo '${{ steps.ssh.outputs.stderr }}'
+         
+         registry: gcr.io
+         project_id: my-awesome-project
+         image_name: backend
+         image_tag: latest,v1
+         dockerfile: ./docker/Dockerfile.prod
+         context: ./docker
 
 
