@@ -69,7 +69,7 @@ jobs:
 
     - name: create template instance
       run: |
-        gcloud compute instance-templates create-with-container ${{github.sha}} --container-image europe-west1-docker.pkg.dev/bailleul-charles/google-repo/app-flask:${{github.sha}} --network-interface network=management,subnet=managementsubnet
+        gcloud compute instance-templates create-with-container ${{github.sha}} --container-image europe-west1-docker.pkg.dev/bailleul-charles/google-repo/app-flask:${{github.sha}} --network-interface network=management,subnet=managementsubnet --region europe-west1
         gcloud compute instance-groups managed rolling-action start-update instance-group-1 --version=template=${{github.sha}}
     
 
