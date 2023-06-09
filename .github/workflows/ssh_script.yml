@@ -63,7 +63,7 @@ jobs:
         registry: europe-west1-docker.pkg.dev
         project_id: bailleul-charles
         image_name: app-flask
-        image_tag: $GITHUB_SHA
+        image_tag: ${{github.sha}}
         dockerfile: ./Dockerfile.main
         context: .
 
