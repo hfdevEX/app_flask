@@ -3,7 +3,7 @@ name: Dockle Security Scan
 on:
   push:
     branches:
-      - dockle_scan_test
+      - main
   pull_request:
     branches:
       - main
