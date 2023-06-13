@@ -3,6 +3,8 @@ WORKDIR /app
 COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY ./server .
+COPY . .
+RUN useradd server
+USER server
 
 CMD ["python3", "-m", "flask", "--app", "server", "run", "--host=0.0.0.0"]
