@@ -1,0 +1,28 @@
+name: Dockle Security Scan
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  dockle-scan:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, ubuntu-20.04, ubuntu-18.04]
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Set up Docker
+        uses: docker/setup-docker@v1
+
+      - name: Run Dockle
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/workspace goodwithtech/dockle:latest /workspace
