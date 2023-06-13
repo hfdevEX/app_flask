@@ -1,12 +1,13 @@
 #!/bin/bash
 ​
-apt  -y update && apt -y upgrade
+sudo apt  -y update && apt -y upgrade
 ​
-apt -y install git
-apt -y install pip
-apt install python3.11-venv
+sudo apt -y install git
+sudo apt -y install pip
+sudo apt install python3.11
+sudo apt install python3.11-venv
 pip install flask
-apt install net-tools
+sudo apt install net-tools
 git clone https://github.com/hfdevEX/app_flask.git
 ​
 cd ./app_flask
