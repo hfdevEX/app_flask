@@ -1,8 +1,11 @@
 FROM python:3.10
-WORKDIR /app2
+
+WORKDIR /app-client
 COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
-RUN pip install requests
-COPY . .
+COPY ./client .
+RUN find / -xdev -perm /6000 -type f -exec chmod a-s {} \; || true
+RUN  useradd client
+USER client
 
 CMD ["python3", "-m", "flask", "--app", "client", "run", "--host=0.0.0.0"]
