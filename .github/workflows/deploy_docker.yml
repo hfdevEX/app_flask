@@ -1,0 +1,77 @@
+# Copyright 2022 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+on:
+  push:
+    branches:
+      - 'deploy'
+
+name: 'Connect to GCP instance via ssh and run a script'
+env:
+  ZONE: 'europe-west1-b'
+
+jobs:
+  deploy-docker-group-instance:
+    runs-on: 'ubuntu-latest'
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+    - name: 'Checkout'
+      uses: 'actions/checkout@v3'
+
+      # Configure Workload Identity Federation and generate an access token.
+    
+ 
+    - name: 'Google auth'
+      id: 'auth'
+      uses: 'google-github-actions/auth@v1'
+      with:
+        create_credentials_file: 'true'
+        workload_identity_provider: '${{ secrets.WIF_PROVIDER }}'
+        service_account: '${{ secrets.WIF_SERVICE_ACCOUNT }}'
+
+#     - name: 'SSH to GCP instance'
+#       id: 'ssh'
+#       uses: 'google-github-actions/ssh-compute@v0'
+#       with:
+#         instance_name: 'instance-poei'
+#         zone: '${{ env.ZONE }}'
+#         ssh_private_key: '${{ secrets.VM_PRIVATE_KEY }}'
+#         script: '${{ github.workspace }}/deploy_detail/deploy.sh'
+   
+#     - name: 'Show Output'
+#       run: |-
+#         echo '${{ steps.ssh.outputs.stdout }}'
+#         echo '${{ steps.ssh.outputs.stderr }}'
+        
+    - name: push to gcr   
+      uses: RafikFarhad/push-to-gcr-github-action@v5-beta
+      with:
+        registry: europe-west1-docker.pkg.dev
+        project_id: bailleul-charles
+        image_name: google-repo/app-flask
+        image_tag: ${{github.sha}}
+        dockerfile: ./Dockerfile.main
+        context: .
+
+    - name: create template instance
+      run: |
+        gcloud compute instance-templates create-with-container ${{github.sha}} --container-image europe-west1-docker.pkg.dev/bailleul-charles/google-repo/app-flask:${{github.sha}} --network-interface network=management,subnet=managementsubnet --region europe-west1
+        gcloud compute instance-groups managed rolling-action start-update instance-group-1 --version=template=${{github.sha}}
+    
+
+
+
