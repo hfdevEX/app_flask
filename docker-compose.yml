@@ -12,18 +12,8 @@ services:
       dockerfile: Dockerfile.server
     ports:
       - 5002:5000
-  server2:
-    build:
-      context: .
-      dockerfile: Dockerfile.server
-    ports:
-      - 5003:5000
-  server3:
-    build:
-      context: .
-      dockerfile: Dockerfile.server
-    ports:
-      - 5004:5000         
+    depends_on:
+      - vault
   load_balancer:
     build:
       context: .
@@ -32,5 +22,16 @@ services:
       - 80:80
     depends_on:
       - server
-      - server2
-      - server3
+  vault:
+    image: vault
+    container_name: vault
+    ports:
+      - "8200:8200"
+    restart: always
+    volumes:
+      - ./volumes/logs:/vault/logs
+      - ./volumes/file:/vault/file
+      - ./volumes/config:/vault/config
+    cap_add:
+      - IPC_LOCK
+    entrypoint: vault server -config=/vault/config/vault.json
