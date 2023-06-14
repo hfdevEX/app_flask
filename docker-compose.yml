@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.9'
 services:
   client:
     build:
@@ -12,8 +12,6 @@ services:
       dockerfile: Dockerfile.server
     ports:
       - 5002:5000
-    depends_on:
-      - vault
   load_balancer:
     build:
       context: .

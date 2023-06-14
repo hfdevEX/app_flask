@@ -24,9 +24,9 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["UPLOAD_FOLDER"] = "uploads"
 
 
-# @app.before_request
-# def create_table():
-#     db.create_all()
+@app.before_request
+def create_table():
+    db.create_all()
 
 
 SWAGGER_URL = "/docs"
