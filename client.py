@@ -34,7 +34,7 @@ def show(id):
 
 
 def get_data(path):
-    url = f"http://load_balancer/{path}"
+    url = f"http://34.22.169.194:5022/{path}"
     r = requests.get(url)
 
     if r.status_code == 200:
