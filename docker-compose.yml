@@ -21,7 +21,7 @@ services:
     depends_on:
       - server
   vault:
-    image: vault
+    image: vault:1.12.7
     container_name: vault
     ports:
       - "8200:8200"
