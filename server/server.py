@@ -132,24 +132,24 @@ def show(id):
         return redirect(url_for("home"))
 
 
-@app.route("/new", methods=["POST", "GET"])
-def add_feed():
-    """
-    Fonction add_feed() pour ajouter un nouveau flux RSS. Gère les requêtes GET et POST.
+# @app.route("/new", methods=["POST", "GET"])
+# def add_feed():
+#     """
+#     Fonction add_feed() pour ajouter un nouveau flux RSS. Gère les requêtes GET et POST.
 
-    Returns:
-        str: Rendu du template 'new.html' en cas de requête GET, ou redirection vers la page d'accueil après l'ajout en cas de requête POST.
-    """
-    if request.method == "GET":
-        return render_template("new.html")
-    name = request.form["name"]
-    url = request.form["url"]
-    image = request.form["image"]
-    feed = RssFeed(name=name, url=url, image=image)
-    db.session.add(feed)
-    db.session.commit()
-    flash("Feed added successfully!", "success")
-    return redirect(url_for("home"))
+#     Returns:
+#         str: Rendu du template 'new.html' en cas de requête GET, ou redirection vers la page d'accueil après l'ajout en cas de requête POST.
+#     """
+#     if request.method == "GET":
+#         return render_template("new.html")
+#     name = request.form["name"]
+#     url = request.form["url"]
+#     image = request.form["image"]
+#     feed = RssFeed(name=name, url=url, image=image)
+#     db.session.add(feed)
+#     db.session.commit()
+#     flash("Feed added successfully!", "success")
+#     return redirect(url_for("home"))
 
 
 @app.route("/edit/<int:id>", methods=["POST", "GET"])
