@@ -32,6 +32,26 @@ def show(id):
 
     return render_template("show.html", feed=feed, articles=articles)
 
+@app.route('/new_feed_client', methods=['GET', 'POST'])
+def add():
+    if request.method == 'POST':
+        name = request.form['name']
+        url = request.form['url']
+        image = request.form['image']
+        data = {
+            'name': name,
+            'url': url,
+            'image': image
+        }
+        response = requests.post("http://35.241.241.68:5001/rss/add", json=data)
+        if response.status_code == 201:
+            flash("Feed added successfully")
+            return redirect(url_for('home'))
+        else:
+            flash("Error adding feed")
+
+    return render_template('new.html')
+
 
 def get_data(path):
     url = f"http://35.241.241.68:5001/{path}"
