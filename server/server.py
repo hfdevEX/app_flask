@@ -96,6 +96,16 @@ def get_feed_metadata(id):
     feed = RssFeed.query.get(id)
     return feed.as_dict()
 
+@app.route('/rss/add', methods=['POST'])
+def add_feed():
+    data = request.get_json()
+    name = data['name']
+    url = data['url']
+    image = data['image']
+    feed = RssFeed(name=name, url=url, image=image)
+    db.session.add(feed)
+    db.session.commit()
+    return jsonify({'message': 'Feed added successfully'})
 
 @app.route("/show/<int:id>", methods=["GET"])
 def show(id):
