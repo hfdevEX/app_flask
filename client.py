@@ -34,7 +34,7 @@ def show(id):
 
 
 def get_data(path):
-    url = f"http://34.22.169.194:5022/{path}"
+    url = f"http://35.241.241.68:5001/{path}"
     r = requests.get(url)
 
     if r.status_code == 200:
